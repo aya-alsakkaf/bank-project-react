@@ -1,13 +1,61 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import "./tailwind.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
+import { Register } from "./pages/Register";
+import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { NavBar } from "./components/NavBar";
+import { Transactions } from "./pages/Transactions";
+import { Users } from "./pages/Users";
+import { Profile } from "./pages/Profile";
+import ROUTER from "./navigation";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const router = createBrowserRouter([
+  {
+    path: ROUTER.LOGIN,
+    element: <Login />,
+  },
+  {
+    path: ROUTER.REGISTER,
+    element: <Register />,
+  },
+  {
+    path: ROUTER.HOME,
+    element: <App />,
+    children: [
+      {
+        path: ROUTER.HOME,
+        element: <Home />,
+      },
+      {
+        path: ROUTER.TRANSACTIONS,
+        element: <Transactions />,
+      },
+      {
+        path: ROUTER.USERS,
+        element: <Users />,
+      },
+      {
+        path: ROUTER.PROFILE,
+        element: <Profile />,
+      },
+    ],
+  },
+]);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+
+    <RouterProvider router={router} />
+    
   </React.StrictMode>
 );
 
