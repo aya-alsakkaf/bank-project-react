@@ -13,6 +13,7 @@ export const Users = () => {
   const usersCard = users?.map((user) => (
     <UserCard key={user.id} image={user.image} username={user.username} />
   ));
+
   return (
     <div className="mt-4 mx-10">
       {isLoading ? (
