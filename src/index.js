@@ -1,23 +1,20 @@
-import React from "react";
+import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./tailwind.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  useNavigate,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Register } from "./pages/Register";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
-import { NavBar } from "./components/NavBar";
 import { Transactions } from "./pages/Transactions";
 import { Users } from "./pages/Users";
 import { Profile } from "./pages/Profile";
 import ROUTER from "./navigation";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
+const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
     path: ROUTER.LOGIN,
@@ -53,9 +50,9 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-
-    <RouterProvider router={router} />
-    
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
