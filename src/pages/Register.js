@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CC from "../assets/images/Credit card-bro.svg";
 import { LogoNav } from "../components/LogoNav";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ROUTER from "../navigation";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "../api/auth";
+import { LoggedInUserContext } from "../context/LoggedInUserContext";
 
 export const Register = () => {
   const [userInfo, setUserInfo] = useState({});
+  const navigate = useNavigate();
+  const setLoggedInUser = useContext(LoggedInUserContext);
 
   const handleChange = (e) => {
     if (e.target.name === "image") {
@@ -18,6 +21,10 @@ export const Register = () => {
   };
   const { mutate } = useMutation({
     mutationFn: () => register(userInfo),
+    onSuccess: () => {
+      navigate(ROUTER.HOME);
+      setLoggedInUser(true);
+    },
     mutationKey: ["register"],
   });
   const handleFormSubmit = (e) => {
@@ -48,7 +55,7 @@ export const Register = () => {
             <form className="space-y-6" onSubmit={handleFormSubmit}>
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="username"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Username
@@ -93,7 +100,7 @@ export const Register = () => {
               <div>
                 <div className="flex items-center justify-between">
                   <label
-                    htmlFor="profilePicture"
+                    htmlFor="image"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Upload a Profile Picture
@@ -102,8 +109,9 @@ export const Register = () => {
                 <div>
                   <input
                     type="file"
-                    id="profilePicture"
-                    name="profilePicture"
+                    id="image"
+                    name="image"
+                    onChange={handleChange}
                     required
                     className="file-input file-input-bordered w-full max-w-2xl"
                   />
@@ -112,7 +120,7 @@ export const Register = () => {
               <div>
                 <button
                   type="submit"
-                  className="btn hover:animate-bounce flex w-full justify-center rounded-md px-3 py-1.5 hover:bg-green-500  "
+                  className="btn hover:animate-bounce flex w-full justify-center rounded-md px-3 py-1.5 hover:bg-green-500 hover:text-white  "
                 >
                   Register
                 </button>

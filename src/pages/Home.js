@@ -3,37 +3,44 @@ import { BalanceContext } from "../context/BalanaceContext";
 import {
   useQuery,
   useMutation,
-  QueryClient,
   useQueryClient,
 } from "@tanstack/react-query";
 import { deposit, profile, withdraw } from "../api/auth";
 
 export const Home = () => {
   const [userBalance, setUserBalance] = useContext(BalanceContext);
+  const [invalidAmount, setInvalidAmount] = useState(false);
   const queryClient = useQueryClient();
   const [moneyAction, setMoneyAction] = useState("deposit");
   const [amount, setAmount] = useState(0);
-  queryClient.invalidateQueries();
-  console.log(amount);
   const { data } = useQuery({
     queryKey: ["profile"],
     queryFn: () => profile(),
   });
   setUserBalance(data?.balance);
 
-  const { mutate: deopsitMoney, isSuccess } = useMutation({
+  const { mutate: deopsitMoney, isSuccess: depositSucess } = useMutation({
     mutationFn: () => deposit(amount),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["transfer"]);
+    },
     mutationKey: ["deposit"],
   });
 
-  const { mutate: withdrawMoney } = useMutation({
+  const {
+    mutate: withdrawMoney,
+    isSuccess: withdrawSucess,
+    isError: withdrawError,
+  } = useMutation({
     mutationFn: () => withdraw(amount),
     mutationKey: ["withdraw"],
   });
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (moneyAction === "deposit") {
+    if (amount <= 0 || amount === "") {
+      setInvalidAmount(true);
+    } else if (moneyAction === "deposit") {
       deopsitMoney();
     } else {
       withdrawMoney();
@@ -83,6 +90,7 @@ export const Home = () => {
                   placeholder="Amount"
                   onChange={(e) => {
                     setAmount(e.target.value);
+                    setInvalidAmount(false);
                   }}
                 />
                 <button className="btn hover:bg-green-500 hover:text-white border-none  text-black mt-3">
@@ -90,6 +98,62 @@ export const Home = () => {
                 </button>
               </form>
             </div>
+
+            {depositSucess || withdrawSucess ? (
+              <div
+                role="alert"
+                className="alert alert-success bg-green-500 text-white mt-3"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {moneyAction === "deposit" ? (
+                  <span>You have deposited {amount} KWD!</span>
+                ) : (
+                  <span>You have withdrawn {amount} KWD!</span>
+                )}
+              </div>
+            ) : (
+              <></>
+            )}
+
+            {invalidAmount || withdrawError ? (
+              <div
+                role="alert"
+                className="alert alert-error bg-red-500 text-white mt-3"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {invalidAmount ? (
+                  <span>Amount can not be empty, negative or equal to 0</span>
+                ) : (
+                  <span>You don't have enough balance to withdraw</span>
+                )}
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
