@@ -1,24 +1,25 @@
 import React from "react";
 import { UserCard } from "../components/UserCard";
+import { useQuery } from "@tanstack/react-query";
+import { getAllUsers } from "../api/auth";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 export const Users = () => {
-  return (
-    <div className="mt-4 mx-10 h-full">
-      <div className="grid grid-cols-3 gap-3 ">
-        <UserCard
-          image={
-            "https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-          }
-          email={"test@test"}
-        />
+  const { data: users, isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getAllUsers(),
+  });
 
-        <UserCard
-          image={
-            "https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-          }
-          email={"test@test"}
-        />
-      </div>
+  const usersCard = users?.map((user) => (
+    <UserCard key={user.id} image={user.image} username={user.username} />
+  ));
+  return (
+    <div className="mt-4 mx-10">
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <div className="grid grid-cols-3 gap-3 ">{usersCard}</div>
+      )}
     </div>
   );
 };
