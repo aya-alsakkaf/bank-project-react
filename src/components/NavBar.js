@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { LogoNav } from "../components/LogoNav";
 import { Link } from "react-router-dom";
 import ROUTER from "../navigation";
+import { logout } from "../api/auth";
+import { useNavigate } from "react-router-dom";
+import { LoggedInUserContext } from "../context/LoggedInUserContext";
 
 export const NavBar = () => {
+  const navigate = useNavigate();
+  const setLoggedInUser = useContext(LoggedInUserContext);
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -48,22 +53,26 @@ export const NavBar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
-          <li>
+          <li className="mx-2">
             <Link to={ROUTER.HOME}> Home </Link>
           </li>
-          <li>
+          <li className="mx-2">
             <Link to={ROUTER.TRANSACTIONS}> Transactions </Link>
           </li>
-          <li>
+          <li className="mx-2">
             <Link to={ROUTER.USERS}> Users </Link>
           </li>
-          <li>
+          <li className="mx-2">
             <Link to={ROUTER.PROFILE}> Profile </Link>
           </li>
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="btn bg-green-500 text-white">Logout</a>
+        <a className="btn bg-green-500 text-white" onClick={() => {
+          navigate(ROUTER.LOGIN);
+          logout();
+          setLoggedInUser(false);
+        }}>Logout</a>
       </div>
     </div>
   );
