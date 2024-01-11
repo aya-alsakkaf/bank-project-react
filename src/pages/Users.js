@@ -3,7 +3,7 @@ import { UserCard } from "../components/UserCard";
 
 export const Users = () => {
   return (
-    <div className="mt-4 mx-10 h-[100vh]">
+    <div className="mt-4 mx-10 h-full">
       <div className="grid grid-cols-3 gap-3 ">
         <UserCard
           image={
