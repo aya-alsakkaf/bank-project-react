@@ -1,0 +1,3 @@
+import { createContext } from "react";
+const LoggedInUserContext = createContext();
+export { LoggedInUserContext };
