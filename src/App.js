@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { getToken } from "./api/storage/token";
 import { LoggedInUserContext } from "./context/LoggedInUserContext";
 import { BalanceContext } from "./context/BalanaceContext";
-import { useQuery } from "@tanstack/react-query";
-import { profile } from "./api/auth";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(false);
