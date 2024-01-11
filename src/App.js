@@ -1,17 +1,35 @@
 import { Outlet } from "react-router-dom";
 import "./App.css";
 import { NavBar } from "./components/NavBar";
-import { Login } from "./pages/Login";
 import { Footer } from "./components/Footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getToken } from "./api/storage/token";
+import { LoggedInUserContext } from "./context/LoggedInUserContext";
+import { BalanceContext } from "./context/BalanaceContext";
+import { useQuery } from "@tanstack/react-query";
+import { profile } from "./api/auth";
 
 function App() {
+  const [loggedInUser, setLoggedInUser] = useState(false);
+  const [userBalance, setUserBalance] = useState(0);
+
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      setLoggedInUser(true);
+    }
+  }, []);
+
   return (
-    <div className="w-screen h-screen">
-      <NavBar />
-      <Outlet />
-      <Footer />
-    </div>
+    <LoggedInUserContext.Provider value={setLoggedInUser}>
+      <div className="w-screen min-h-screen">
+        <NavBar />
+        <BalanceContext.Provider value={[userBalance, setUserBalance]}>
+          <Outlet />
+        </BalanceContext.Provider>
+        <Footer />
+      </div>
+    </LoggedInUserContext.Provider>
   );
 }
 
