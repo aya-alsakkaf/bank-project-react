@@ -66,5 +66,23 @@ const withdraw = async (amount) => {
 const getAllUsers = async () => {
   const { data } = await instance.get("/mini-project/api/auth/users");
   return data;
-}
-export { login, register, logout, profile, getTransactions, deposit, withdraw, getAllUsers };
+};
+
+const transferMoney = async (userInfo) => {
+  const { data } = await instance.put(
+    `/mini-project/api/transactions/transfer/${userInfo.username}`,
+    userInfo
+  );
+  return data;
+};
+export {
+  login,
+  register,
+  logout,
+  profile,
+  getTransactions,
+  deposit,
+  withdraw,
+  getAllUsers,
+  transferMoney,
+};
