@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import "./App.css";
 import { NavBar } from "./components/NavBar";
 import { Footer } from "./components/Footer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getToken } from "./api/storage/token";
 import { LoggedInUserContext } from "./context/LoggedInUserContext";
 import { BalanceContext } from "./context/BalanaceContext";
@@ -19,7 +19,7 @@ function App() {
   }, []);
 
   return (
-    <LoggedInUserContext.Provider value={setLoggedInUser}>
+    <LoggedInUserContext.Provider value={[loggedInUser, setLoggedInUser]}>
       <div className="w-screen min-h-screen">
         <NavBar />
         <BalanceContext.Provider value={[userBalance, setUserBalance]}>
