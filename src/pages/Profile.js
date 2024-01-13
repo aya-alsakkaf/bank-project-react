@@ -11,11 +11,10 @@ export const Profile = () => {
 
   return (
     <div className=" h-full m-4 mx-10 flex justify-center items-center">
-      
       <UserCard
         profile={true}
         addClass={"rounded-full"}
-        image={"https://react-bank-project.eapi.joincoded.com" + data?.image}
+        image={"https://react-bank-project.eapi.joincoded.com/" + data?.image}
         username={data?.username}
       />
     </div>
