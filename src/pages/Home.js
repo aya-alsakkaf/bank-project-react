@@ -1,10 +1,6 @@
 import React, { useContext, useState } from "react";
 import { BalanceContext } from "../context/BalanaceContext";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deposit, profile, withdraw } from "../api/auth";
 
 export const Home = () => {
@@ -19,7 +15,11 @@ export const Home = () => {
   });
   setUserBalance(data?.balance);
 
-  const { mutate: deopsitMoney, isSuccess: depositSucess } = useMutation({
+  const {
+    mutate: deopsitMoney,
+    isSuccess: depositSucess,
+    reset: resetDeopsit,
+  } = useMutation({
     mutationFn: () => deposit(amount),
     onSuccess: () => {
       queryClient.invalidateQueries(["transfer"]);
@@ -31,6 +31,7 @@ export const Home = () => {
     mutate: withdrawMoney,
     isSuccess: withdrawSucess,
     isError: withdrawError,
+    reset: resetWithdraw,
   } = useMutation({
     mutationFn: () => withdraw(amount),
     mutationKey: ["withdraw"],
@@ -91,6 +92,8 @@ export const Home = () => {
                   onChange={(e) => {
                     setAmount(e.target.value);
                     setInvalidAmount(false);
+                    resetDeopsit();
+                    resetWithdraw();
                   }}
                 />
                 <button className="btn hover:bg-green-500 hover:text-white border-none  text-black mt-3">
