@@ -1,14 +1,16 @@
 import React, { useContext } from "react";
 import { LogoNav } from "../components/LogoNav";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import ROUTER from "../navigation";
 import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { LoggedInUserContext } from "../context/LoggedInUserContext";
+import { act } from "react-dom/test-utils";
 
 export const NavBar = () => {
   const navigate = useNavigate();
   const setLoggedInUser = useContext(LoggedInUserContext);
+  const activeLink = "bg-green-500 text-white hover:bg-green-500";
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -33,17 +35,41 @@ export const NavBar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <li>
-              <a className="">Home</a>
+            <li className="mx-2">
+              <NavLink
+                className={({ isActive }) => (isActive ? activeLink : "")}
+                to={ROUTER.HOME}
+              >
+                {" "}
+                Home{" "}
+              </NavLink>
             </li>
-            <li>
-              <a>Transactions</a>
+            <li className="mx-2">
+              <NavLink
+                to={ROUTER.TRANSACTIONS}
+                className={({ isActive }) => (isActive ? activeLink : "")}
+              >
+                {" "}
+                Transactions{" "}
+              </NavLink>
             </li>
-            <li>
-              <a>Users</a>
+            <li className="mx-2">
+              <NavLink
+                to={ROUTER.USERS}
+                className={({ isActive }) => (isActive ? activeLink : "")}
+              >
+                {" "}
+                Users{" "}
+              </NavLink>
             </li>
-            <li>
-              <a>Profile</a>
+            <li className="mx-2">
+              <NavLink
+                to={ROUTER.PROFILE}
+                className={({ isActive }) => (isActive ? activeLink : "")}
+              >
+                {" "}
+                Profile{" "}
+              </NavLink>
             </li>
           </ul>
         </div>
@@ -54,25 +80,54 @@ export const NavBar = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
           <li className="mx-2">
-            <Link to={ROUTER.HOME}> Home </Link>
+            <NavLink
+              className={({ isActive }) => (isActive ? activeLink : "")}
+              to={ROUTER.HOME}
+            >
+              {" "}
+              Home{" "}
+            </NavLink>
           </li>
           <li className="mx-2">
-            <Link to={ROUTER.TRANSACTIONS}> Transactions </Link>
+            <NavLink
+              to={ROUTER.TRANSACTIONS}
+              className={({ isActive }) => (isActive ? activeLink : "")}
+            >
+              {" "}
+              Transactions{" "}
+            </NavLink>
           </li>
           <li className="mx-2">
-            <Link to={ROUTER.USERS}> Users </Link>
+            <NavLink
+              to={ROUTER.USERS}
+              className={({ isActive }) => (isActive ? activeLink : "")}
+            >
+              {" "}
+              Users{" "}
+            </NavLink>
           </li>
           <li className="mx-2">
-            <Link to={ROUTER.PROFILE}> Profile </Link>
+            <NavLink
+              to={ROUTER.PROFILE}
+              className={({ isActive }) => (isActive ? activeLink : "")}
+            >
+              {" "}
+              Profile{" "}
+            </NavLink>
           </li>
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="btn bg-green-500 text-white" onClick={() => {
-          navigate(ROUTER.LOGIN);
-          logout();
-          setLoggedInUser(false);
-        }}>Logout</a>
+        <a
+          className="btn bg-green-500 text-white"
+          onClick={() => {
+            navigate(ROUTER.LOGIN);
+            logout();
+            setLoggedInUser(false);
+          }}
+        >
+          Logout
+        </a>
       </div>
     </div>
   );
