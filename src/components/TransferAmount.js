@@ -5,7 +5,13 @@ import { transferMoney } from "../api/auth";
 const TransferMoney = ({ show, onClose, onSave, username }) => {
   const [amount, setAmount] = useState(0);
   const queryClient = useQueryClient();
-  const { mutate: transfer } = useMutation({
+  const [invalidAmount, setInvalidAmount] = useState(false);
+  const {
+    mutate: transfer,
+    isError,
+    isSuccess,
+    reset,
+  } = useMutation({
     mutationFn: () =>
       transferMoney({
         amount,
@@ -18,7 +24,11 @@ const TransferMoney = ({ show, onClose, onSave, username }) => {
   });
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    transfer();
+    if (amount <= 0 || amount === "") {
+      setInvalidAmount(true);
+    } else {
+      transfer();
+    }
   };
 
   if (!show) {
@@ -45,11 +55,65 @@ const TransferMoney = ({ show, onClose, onSave, username }) => {
               value={amount}
               onChange={(e) => {
                 setAmount(e.target.value);
+                setInvalidAmount(false);
+                reset();
               }}
               className="w-full px-4 py-2 border border-green-500 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
           </div>
+          {isSuccess ? (
+            <>
+              <div
+                role="alert"
+                className="alert alert-success bg-green-500 text-white mt-3"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>You have transfered {amount} KWD!</span>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+          {invalidAmount || isError ? (
+            <div
+              role="alert"
+              className="alert alert-error bg-red-500 text-white mt-3"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              {invalidAmount ? (
+                <span>Amount can not be empty, negative or equal to 0</span>
+              ) : (
+                <span>You don't have enough balance to transfer</span>
+              )}
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="flex justify-center">
             <button
               type="submit"
