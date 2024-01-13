@@ -14,6 +14,7 @@ export const Home = () => {
   const [moneyAction, setMoneyAction] = useState("deposit");
   const [amount, setAmount] = useState(0);
   const navigate = useNavigate();
+
   if (!loggedInUser) {
     navigate(ROUTER.LOGIN);
   }

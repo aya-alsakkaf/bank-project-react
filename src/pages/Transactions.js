@@ -11,11 +11,9 @@ export const Transactions = () => {
   const [loggedInUser, setLoggedInUser] = useContext(LoggedInUserContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loggedInUser) {
-      navigate(ROUTER.LOGIN);
-    }
-  }, []);
+  if (!loggedInUser) {
+    navigate(ROUTER.LOGIN);
+  }
   const dayjs = require("dayjs");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
@@ -35,6 +33,7 @@ export const Transactions = () => {
     ?.sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt))
     .map((trans) => (
       <TransCard
+        key={trans._id}
         amount={trans.amount}
         type={trans.type}
         date={dayjs(trans.createdAt).format("DD/MM/YYYY")}

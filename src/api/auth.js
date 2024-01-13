@@ -6,7 +6,7 @@ const login = async (userInfo) => {
     "/mini-project/api/auth/login",
     userInfo
   );
-  console.log(data);
+
   const token = data.token;
   if (token) {
     storeToken(token);

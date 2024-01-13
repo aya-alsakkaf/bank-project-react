@@ -10,12 +10,9 @@ export const Profile = () => {
   const [loggedInUser, setLoggedInUser] = useContext(LoggedInUserContext);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!loggedInUser) {
-      navigate(ROUTER.LOGIN);
-    }
-  }, []);
+  if (!loggedInUser) {
+    navigate(ROUTER.LOGIN);
+  }
 
   const { data } = useQuery({
     queryKey: ["profile"],
