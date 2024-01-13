@@ -11,7 +11,12 @@ export const Users = () => {
   });
 
   const usersCard = users?.map((user) => (
-    <UserCard key={user.id} image={user.image} username={user.username} />
+    <UserCard
+      key={user.id}
+      image={user.image}
+      username={user.username}
+      balance={user.balance}
+    />
   ));
 
   return (

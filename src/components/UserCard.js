@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TransferMoney from "./TransferAmount";
 
-export const UserCard = ({ image, username, addClass, profile }) => {
+export const UserCard = ({ image, username, addClass, profile, balance }) => {
   const baseImg = "https://react-bank-project.eapi.joincoded.com/";
   const [show, setShow] = useState(false);
   const onClose = () => setShow(false);
@@ -17,6 +17,7 @@ export const UserCard = ({ image, username, addClass, profile }) => {
       </figure>
       <div className="card-body items-center text-center">
         <h2 className="card-title">{username}</h2>
+        <p className="font-bold">Balance: {balance}</p>
         {profile ? (
           <></>
         ) : (
