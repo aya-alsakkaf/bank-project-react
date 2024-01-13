@@ -17,18 +17,21 @@ export const UserCard = ({ image, username, addClass, profile, balance }) => {
       </figure>
       <div className="card-body items-center text-center">
         <h2 className="card-title">{username}</h2>
-        <p className="font-bold">Balance: {balance}</p>
+
         {profile ? (
           <></>
         ) : (
-          <div className="card-actions">
-            <button
-              className="btn btn-ghost hover:bg-green-500 hover:text-white"
-              onClick={onOpen}
-            >
-              Transfer
-            </button>
-          </div>
+          <>
+            <p className="font-bold">Balance: {balance}</p>
+            <div className="card-actions">
+              <button
+                className="btn btn-ghost hover:bg-green-500 hover:text-white"
+                onClick={onOpen}
+              >
+                Transfer
+              </button>
+            </div>
+          </>
         )}
       </div>
       <TransferMoney
