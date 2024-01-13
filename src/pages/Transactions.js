@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { TransCard } from "../components/TransCard";
 import { SearchBar } from "../components/SearchBar";
 import { getTransactions } from "../api/auth";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-
+import ROUTER from "../navigation";
+import { useNavigate } from "react-router-dom";
+import { LoggedInUserContext } from "../context/LoggedInUserContext";
 export const Transactions = () => {
+  const [loggedInUser, setLoggedInUser] = useContext(LoggedInUserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loggedInUser) {
+      navigate(ROUTER.LOGIN);
+    }
+  }, []);
   const dayjs = require("dayjs");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
@@ -22,7 +32,7 @@ export const Transactions = () => {
         dayjs(trans.createdAt).format("DD/MM/YYYY").includes(search)
     )
     ?.filter((trans) => trans.type.includes(filter))
-    ?.sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt)) 
+    ?.sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt))
     .map((trans) => (
       <TransCard
         amount={trans.amount}

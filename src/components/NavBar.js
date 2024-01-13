@@ -5,11 +5,11 @@ import ROUTER from "../navigation";
 import { logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { LoggedInUserContext } from "../context/LoggedInUserContext";
-import { act } from "react-dom/test-utils";
+
 
 export const NavBar = () => {
   const navigate = useNavigate();
-  const setLoggedInUser = useContext(LoggedInUserContext);
+  const [loggedInUser, setLoggedInUser] = useContext(LoggedInUserContext);
   const activeLink = "bg-green-500 text-white hover:bg-green-500";
   return (
     <div className="navbar bg-base-100">

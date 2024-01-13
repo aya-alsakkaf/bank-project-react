@@ -2,13 +2,21 @@ import React, { useContext, useState } from "react";
 import { BalanceContext } from "../context/BalanaceContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deposit, profile, withdraw } from "../api/auth";
+import { LoggedInUserContext } from "../context/LoggedInUserContext";
+import { useNavigate } from "react-router-dom";
+import ROUTER from "../navigation/index";
 
 export const Home = () => {
   const [userBalance, setUserBalance] = useContext(BalanceContext);
+  const [loggedInUser, setLoggedInUser] = useContext(LoggedInUserContext);
   const [invalidAmount, setInvalidAmount] = useState(false);
   const queryClient = useQueryClient();
   const [moneyAction, setMoneyAction] = useState("deposit");
   const [amount, setAmount] = useState(0);
+  const navigate = useNavigate();
+  if (!loggedInUser) {
+    navigate(ROUTER.LOGIN);
+  }
   const { data } = useQuery({
     queryKey: ["profile"],
     queryFn: () => profile(),

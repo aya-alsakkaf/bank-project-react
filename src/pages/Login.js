@@ -9,7 +9,7 @@ import { login } from "../api/auth";
 
 export const Login = () => {
   const [userInfo, setUserInfo] = useState({});
-  const setLoggedInUser = useContext(LoggedInUserContext);
+  const [loggedInUser, setLoggedInUser] = useContext(LoggedInUserContext);
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
