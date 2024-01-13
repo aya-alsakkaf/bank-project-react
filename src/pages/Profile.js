@@ -14,7 +14,7 @@ export const Profile = () => {
       <UserCard
         profile={true}
         addClass={"rounded-full"}
-        image={"https://react-bank-project.eapi.joincoded.com/" + data?.image}
+        image={`${data?.image}`}
         username={data?.username}
       />
     </div>
