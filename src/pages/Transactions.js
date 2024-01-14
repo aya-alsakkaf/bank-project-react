@@ -7,16 +7,25 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import ROUTER from "../navigation";
 import { useNavigate } from "react-router-dom";
 import { LoggedInUserContext } from "../context/LoggedInUserContext";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 export const Transactions = () => {
+  const dayjs = require("dayjs");
+  const currentDate = new Date().toDateString();
+  const formatDate = (date) => dayjs(date).format("DD/MM/YYYY");
   const [loggedInUser, setLoggedInUser] = useContext(LoggedInUserContext);
   const navigate = useNavigate();
+  const [valueFrom, setValueFrom] = useState(dayjs(currentDate));
+  const [valueTo, setValueTo] = useState(dayjs(currentDate));
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("");
 
   if (!loggedInUser) {
     navigate(ROUTER.LOGIN);
   }
-  const dayjs = require("dayjs");
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("");
 
   const { data: transactions, isLoading } = useQuery({
     queryKey: ["transactions"],
@@ -24,13 +33,17 @@ export const Transactions = () => {
   });
 
   const transCards = transactions
+    ?.filter((trans) => trans.amount.toString().includes(search))
+    ?.filter((trans) => trans.type.includes(filter))
     ?.filter(
       (trans) =>
-        trans.amount.toString().includes(search) ||
-        dayjs(trans.createdAt).format("DD/MM/YYYY").includes(search)
+        formatDate(trans.createdAt) >= formatDate(valueFrom) &&
+        formatDate(trans.createdAt) <= formatDate(valueTo)
     )
-    ?.filter((trans) => trans.type.includes(filter))
-    ?.sort((a, b) => dayjs(b.createdAt) - dayjs(a.createdAt))
+    ?.sort(
+      (transA, transB) =>
+        formatDate(transB.createdAt) - formatDate(transA.createdAt)
+    )
     .map((trans) => (
       <TransCard
         key={trans._id}
@@ -42,7 +55,7 @@ export const Transactions = () => {
   return (
     <div className="h-full">
       <SearchBar setSearch={setSearch} />
-      <div className="flex flex-row justify-center">
+      <div className="flex flex-col justify-center items-center">
         <form className="flex flex-row justify-content mt-3">
           <p className="font-bold mt-2 mx-2">Filter: </p>
           <label className="label cursor-pointer">
@@ -94,6 +107,23 @@ export const Transactions = () => {
             <span className="label-text mx-3">Transfer</span>
           </label>
         </form>
+
+        <div className="flex flex-row mt-2">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={["DatePicker", "DatePicker"]}>
+              <DatePicker
+                label="From"
+                value={valueFrom}
+                onChange={(newValueFrom) => setValueFrom(newValueFrom)}
+              />
+              <DatePicker
+                label="To"
+                value={valueTo}
+                onChange={(newValueTo) => setValueTo(newValueTo)}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        </div>
       </div>
       {isLoading ? (
         <div className="text-center w-full h-full flex justify-center items-center">
