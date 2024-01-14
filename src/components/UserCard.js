@@ -47,10 +47,10 @@ export const UserCard = ({ image, username, addClass, profile, balance }) => {
       <div className="card-body items-center text-center">
         <h2 className="card-title">{username}</h2>
 
+        <p className="font-bold">Balance: {balance}</p>
         {profile ? (
           <>
             <form onSubmit={handleFormSubmit}>
-              <p className="font-bold">Balance: {balance}</p>
               <div className="mt-3">
                 <div className="flex items-center justify-center">
                   <label

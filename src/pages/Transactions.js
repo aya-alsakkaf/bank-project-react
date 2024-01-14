@@ -33,25 +33,48 @@ export const Transactions = () => {
     queryFn: getTransactions,
   });
 
-  const filterSearch = transactions?.filter((trans) =>
-    trans.amount.toString().includes(search)
-  );
+  // const filterSearch = transactions?.filter((trans) =>
+  //   trans.amount.toString().includes(search)
+  // );
 
-  const searchDate = filterSearch?.filter((trans) => {
-    return date
-      ? formatDate(trans.createdAt) >= formatDate(valueFrom) &&
-          formatDate(trans.createdAt) <= formatDate(valueTo)
-      : true;
-  });
-  const searchType = searchDate?.filter((trans) => trans.type.includes(filter));
-  const transCards = searchType
-    ?.sort(
+  // const searchDate = filterSearch?.filter((trans) => {
+  //   return date
+  //     ? formatDate(trans.createdAt) >= formatDate(valueFrom) &&
+  //         formatDate(trans.createdAt) <= formatDate(valueTo)
+  //     : true;
+  // });
+  // const searchType = searchDate?.filter((trans) =>
+  //   filter === "" ? trans : trans.type === filter
+  // );
+  // const transCards = searchType
+  //   ?.sort(
+  //     (transA, transB) =>
+  //       new Date(transB.createdAt) - new Date(transA.createdAt)
+  //   )
+  //   ?.map((trans) => (
+  //     <TransCard
+  //       key={trans._id}
+  //       amount={trans.amount}
+  //       type={trans.type}
+  //       date={dayjs(trans.createdAt).format("DD/MM/YYYY")}
+  //     />
+  //   ));
+
+  const transCards = transactions
+    ?.filter(
+      (trans) =>
+        trans.amount.toString().includes(search) &&
+        trans.type.includes(filter) &&
+        (!date ||
+          (formatDate(trans.createdAt) >= formatDate(valueFrom) &&
+            formatDate(trans.createdAt) <= formatDate(valueTo)))
+    )
+    .sort(
       (transA, transB) =>
         new Date(transB.createdAt) - new Date(transA.createdAt)
     )
-    ?.map((trans) => (
+    .map((trans) => (
       <TransCard
-        key={trans._id}
         amount={trans.amount}
         type={trans.type}
         date={dayjs(trans.createdAt).format("DD/MM/YYYY")}
@@ -112,7 +135,7 @@ export const Transactions = () => {
           <label className="label cursor-pointer">
             <input
               type="radio"
-              id="All"
+              id="transfer"
               name="filter"
               value="transfer"
               className="radio checked:bg-green-500"
