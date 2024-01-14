@@ -26,6 +26,7 @@ export const Profile = () => {
         addClass={"rounded-full"}
         image={`${data?.image}`}
         username={data?.username}
+        balance={data?.balance}
       />
     </div>
   );

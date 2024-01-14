@@ -75,6 +75,18 @@ const transferMoney = async (userInfo) => {
   );
   return data;
 };
+
+const profilePicture = async (userInfo) => {
+  const formData = new FormData();
+  for (const key in userInfo) {
+    formData.append(key, userInfo[key]);
+  }
+  const { data } = await instance.put(
+    "/mini-project/api/auth/profile",
+    formData
+  );
+  return data;
+};
 export {
   login,
   register,
@@ -85,4 +97,5 @@ export {
   withdraw,
   getAllUsers,
   transferMoney,
+  profilePicture,
 };

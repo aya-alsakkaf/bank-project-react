@@ -22,6 +22,7 @@ export const Transactions = () => {
   const [valueTo, setValueTo] = useState(dayjs(currentDate));
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+  const [date, setDate] = useState(false);
 
   if (!loggedInUser) {
     navigate(ROUTER.LOGIN);
@@ -32,19 +33,23 @@ export const Transactions = () => {
     queryFn: getTransactions,
   });
 
-  const transCards = transactions
-    ?.filter((trans) => trans.amount.toString().includes(search))
-    ?.filter((trans) => trans.type.includes(filter))
-    ?.filter(
-      (trans) =>
-        formatDate(trans.createdAt) >= formatDate(valueFrom) &&
-        formatDate(trans.createdAt) <= formatDate(valueTo)
-    )
+  const filterSearch = transactions?.filter((trans) =>
+    trans.amount.toString().includes(search)
+  );
+
+  const searchDate = filterSearch?.filter((trans) => {
+    return date
+      ? formatDate(trans.createdAt) >= formatDate(valueFrom) &&
+          formatDate(trans.createdAt) <= formatDate(valueTo)
+      : true;
+  });
+  const searchType = searchDate?.filter((trans) => trans.type.includes(filter));
+  const transCards = searchType
     ?.sort(
       (transA, transB) =>
-        formatDate(transB.createdAt) - formatDate(transA.createdAt)
+        new Date(transB.createdAt) - new Date(transA.createdAt)
     )
-    .map((trans) => (
+    ?.map((trans) => (
       <TransCard
         key={trans._id}
         amount={trans.amount}
@@ -52,6 +57,7 @@ export const Transactions = () => {
         date={dayjs(trans.createdAt).format("DD/MM/YYYY")}
       />
     ));
+
   return (
     <div className="h-full">
       <SearchBar setSearch={setSearch} />
@@ -66,7 +72,10 @@ export const Transactions = () => {
               value=""
               className="radio checked:bg-green-500"
               checked={filter === ""}
-              onChange={() => setFilter("")}
+              onChange={() => {
+                setFilter("");
+                setDate(false);
+              }}
             />
             <span className="label-text mx-3">All</span>
           </label>
@@ -78,7 +87,10 @@ export const Transactions = () => {
               value="deposit"
               className="radio checked:bg-green-500"
               checked={filter === "deposit"}
-              onChange={() => setFilter("deposit")}
+              onChange={() => {
+                setFilter("deposit");
+                setDate(false);
+              }}
             />
             <span className="label-text mx-3">Deposit</span>
           </label>
@@ -90,7 +102,10 @@ export const Transactions = () => {
               value="withdraw"
               className="radio checked:bg-green-500"
               checked={filter === "withdraw"}
-              onChange={() => setFilter("withdraw")}
+              onChange={() => {
+                setFilter("withdraw");
+                setDate(false);
+              }}
             />
             <span className="label-text mx-3">Withdraw</span>
           </label>
@@ -102,28 +117,49 @@ export const Transactions = () => {
               value="transfer"
               className="radio checked:bg-green-500"
               checked={filter === "transfer"}
-              onChange={() => setFilter("transfer")}
+              onChange={() => {
+                setFilter("transfer");
+                setDate(false);
+              }}
             />
             <span className="label-text mx-3">Transfer</span>
           </label>
+          <label className="label cursor-pointer">
+            <input
+              type="radio"
+              id="All"
+              name="date"
+              value="date"
+              className="radio checked:bg-green-500"
+              checked={date === true}
+              onChange={() => {
+                setDate(true);
+                setFilter("");
+              }}
+            />
+            <span className="label-text mx-3">By Date</span>
+          </label>
         </form>
-
-        <div className="flex flex-row mt-2">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker", "DatePicker"]}>
-              <DatePicker
-                label="From"
-                value={valueFrom}
-                onChange={(newValueFrom) => setValueFrom(newValueFrom)}
-              />
-              <DatePicker
-                label="To"
-                value={valueTo}
-                onChange={(newValueTo) => setValueTo(newValueTo)}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </div>
+        {date ? (
+          <div className="flex flex-row mt-2">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker", "DatePicker"]}>
+                <DatePicker
+                  label="From"
+                  value={valueFrom}
+                  onChange={(newValueFrom) => setValueFrom(newValueFrom)}
+                />
+                <DatePicker
+                  label="To"
+                  value={valueTo}
+                  onChange={(newValueTo) => setValueTo(newValueTo)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       {isLoading ? (
         <div className="text-center w-full h-full flex justify-center items-center">
